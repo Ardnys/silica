@@ -1,0 +1,24 @@
+--- le tables ---
+
+all ids are primary keys
+
+
+OWNER(id, address, name, phone_number)
+
+SPECIES(id, name)
+
+PET(id, owner_id, species_id, name, is_aggressive, microchip_number, is_neutered, birth_date)
+
+VACCINE(id, price, time_period, name, origin)
+
+VACCINATION(id, vaccine_id, pet_id, owner_id, species_id, date)
+
+ALLERGEN(id, name)
+
+== many to many relationships ==
+
+REACTS_TO(pet_id, owner_id, species_id, allergen_id)
+
+VACCINATION_FOR(species_id, vaccine_id)
+
+CONTAINS(allergen_id, vaccine_id)

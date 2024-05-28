@@ -17,8 +17,24 @@ client.connect();
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// Add fields as necessary
 app.get("/api/pets", (req, res) => {
-	client.query("SELECT * FROM pet", (err, result) => {
+	client.query(
+		`SELECT o.name as owner_name, p.name as pet_name, p.microchip_number 
+			      FROM pet as p, owner as o 
+				  WHERE p.owner_id = o.owner_id`,
+		(err, result) => {
+			if (err) {
+				res.status(500).send(err);
+			} else {
+				res.json(result.rows);
+			}
+		}
+	);
+});
+
+app.get("/api/owners", (req, res) => {
+	client.query("SELECT * FROM owner", (err, result) => {
 		if (err) {
 			res.status(500).send(err);
 		} else {
@@ -27,10 +43,18 @@ app.get("/api/pets", (req, res) => {
 	});
 });
 
-app.get("/api/owners", (req, res) => {
-	client.query("SELECT * FROM owner", (err, result) => {
+app.get("/api/pet_owner", (req, res) => {
+	const pet_id = req.query.pet_id;
+	let query_string = `select o.name as owner_name
+			from public.pet as p, public.owner as o
+			where p.owner_id = o.owner_id `;
+	if (pet_id) {
+		query_string += `and p.pet_id = $1;`;
+	}
+	client.query(query_string, [pet_id], (err, result) => {
 		if (err) {
 			res.status(500).send(err);
+			console.log("what: " + err);
 		} else {
 			res.json(result.rows);
 		}

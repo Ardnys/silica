@@ -50,12 +50,12 @@ async function fetchOwnerPet() {
 
 // triggered when a pet is selected from the list
 function SelectPet(content) {
-	let div = document.getElementById("selected-pet-div");
+	let div = document.getElementById("selected-pet-section");
+	div.hidden = false;
 	let owner_name_p = document.getElementById("owner-name-v");
 	let pet_name_p = document.getElementById("pet-name-v");
 	owner_name_p.innerHTML = content.owner_name;
 	pet_name_p.innerHTML = content.pet_name;
-	div.hidden = false;
 }
 
 document.addEventListener("DOMContentLoaded", fetchPets);

@@ -4,30 +4,31 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Vet</title>
+	<title>Vet Dashboard</title>
+	<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-	<div>
-		<h1>Pet List</h1>
-		<ul id="pet-list"></ul>
-	</div>
-	<div>
-		<h1>Owner List</h1>
-		<ul id="owner-list"></ul>
-	</div>
-	<div>
-		<h1>Search pet by owner name</h1>
-		<input id="owner-input" type="text" placeholder="enter name">
-		<button id="owner-pet-search">Search</button>
-		<ul id="owner-pet-list"></ul>
-	</div>
-	<div id="selected-pet-div" hidden style="border: 5px;">
-		<h1>Selected pet</h1>
-		<p class="pet-field" id="owner-name-k">Owner: </p>
-		<p class="pet-value" id="owner-name-v"></p>
-		<p class="pet-field" id="pet-name-k">Name: </p>
-		<p class="pet-value" id="pet-name-v"></p>
+	<div class="container">
+		<div class="section" id="pet-section">
+			<h1>Pet List</h1>
+			<ul id="pet-list"></ul>
+		</div>
+		<div class="section" id="owner-section">
+			<h1>Owner List</h1>
+			<ul id="owner-list"></ul>
+		</div>
+		<div class="section" id="search-section">
+			<h1>Search pet by owner name</h1>
+			<input id="owner-input" type="text" placeholder="Enter name">
+			<button id="owner-pet-search">Search</button>
+			<ul id="owner-pet-list"></ul>
+		</div>
+		<div class="section" id="selected-pet-section" hidden>
+			<h1>Selected pet</h1>
+			<p><span class="pet-field">Owner:</span> <span class="pet-value" id="owner-name-v"></span></p>
+			<p><span class="pet-field">Name:</span> <span class="pet-value" id="pet-name-v"></span></p>
+		</div>
 	</div>
 
 	<script src="script.js"></script>

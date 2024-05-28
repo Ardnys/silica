@@ -96,3 +96,19 @@ CREATE TABLE public.contains(
 	CONSTRAINT contains_vaccine_fk FOREIGN KEY (vaccine_id) REFERENCES public.vaccine (vaccine_id),
 	CONSTRAINT contains_pk PRIMARY KEY(allergen_id, vaccine_id)
 );
+
+-- dropping time period column and adding new
+ALTER TABLE public.vaccine
+DROP column time_period
+ADD time_period INTEGER
+
+-- setting time periods of vaccines in months
+UPDATE public.vaccine
+SET time_period = CASE
+    WHEN vaccine_id = 1 THEN 3
+    WHEN vaccine_id = 2 THEN 6
+    WHEN vaccine_id = 3 THEN 2
+    WHEN vaccine_id = 4 THEN 4
+    WHEN vaccine_id = 5 THEN 12
+    WHEN vaccine_id = 6 THEN 6
+END

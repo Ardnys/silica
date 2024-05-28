@@ -6,7 +6,13 @@ async function fetchPets() {
 		const petList = document.getElementById("pet-list");
 		pets.forEach((pet) => {
 			const listItem = document.createElement("li");
-			listItem.textContent = `${pet.name} (Microchip: ${pet.microchip_number})`;
+			listItem.textContent = `${pet.pet_name} (Microchip: ${pet.microchip_number})`;
+			listItem.addEventListener("click", () =>
+				SelectPetAndOwner({
+					owner_name: pet.owner_name,
+					pet_name: pet.pet_name,
+				})
+			);
 			petList.appendChild(listItem);
 		});
 	} catch (error) {
@@ -22,6 +28,11 @@ async function fetchOwners() {
 		owners.forEach((owner) => {
 			const listItem = document.createElement("li");
 			listItem.textContent = `Name: ${owner.name} (Phone: ${owner.phone_number})`;
+			listItem.addEventListener("click", async () => {
+				const search_box = document.getElementById("owner-input");
+				search_box.value = owner.name;
+				await fetchOwnerPet();
+			});
 			ownerList.appendChild(listItem);
 		});
 	} catch (error) {
@@ -37,10 +48,11 @@ async function fetchOwnerPet() {
 		);
 		const owners = await response.json();
 		const ownerList = document.getElementById("owner-pet-list");
+		ownerList.innerHTML = "";
 		owners.forEach((owner) => {
 			const listItem = document.createElement("li");
 			listItem.textContent = `Name: ${owner.owner_name} (Pet: ${owner.pet_name})`;
-			listItem.addEventListener("click", () => SelectPet(owner));
+			listItem.addEventListener("click", () => SelectPetAndOwner(owner));
 			ownerList.appendChild(listItem);
 		});
 	} catch (error) {
@@ -49,13 +61,13 @@ async function fetchOwnerPet() {
 }
 
 // triggered when a pet is selected from the list
-function SelectPet(content) {
-	let div = document.getElementById("selected-pet-div");
+function SelectPetAndOwner(content) {
+	let div = document.getElementById("selected-pet-section");
+	div.hidden = false;
 	let owner_name_p = document.getElementById("owner-name-v");
 	let pet_name_p = document.getElementById("pet-name-v");
 	owner_name_p.innerHTML = content.owner_name;
 	pet_name_p.innerHTML = content.pet_name;
-	div.hidden = false;
 }
 
 document.addEventListener("DOMContentLoaded", fetchPets);

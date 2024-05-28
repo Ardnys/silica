@@ -32,21 +32,30 @@ async function fetchOwners() {
 async function fetchOwnerPet() {
 	try {
 		const oname_text = document.getElementById("owner-input").value;
-		console.log("oname: " + oname_text);
 		const response = await fetch(
 			"/api/owner_pet?" + new URLSearchParams({ owner_name: oname_text })
 		);
 		const owners = await response.json();
-		console.log(owners);
 		const ownerList = document.getElementById("owner-pet-list");
 		owners.forEach((owner) => {
 			const listItem = document.createElement("li");
 			listItem.textContent = `Name: ${owner.owner_name} (Pet: ${owner.pet_name})`;
+			listItem.addEventListener("click", () => SelectPet(owner));
 			ownerList.appendChild(listItem);
 		});
 	} catch (error) {
 		console.error("Error fetching owners:", error);
 	}
+}
+
+// triggered when a pet is selected from the list
+function SelectPet(content) {
+	let div = document.getElementById("selected-pet-div");
+	let owner_name_p = document.getElementById("owner-name-v");
+	let pet_name_p = document.getElementById("pet-name-v");
+	owner_name_p.innerHTML = content.owner_name;
+	pet_name_p.innerHTML = content.pet_name;
+	div.hidden = false;
 }
 
 document.addEventListener("DOMContentLoaded", fetchPets);

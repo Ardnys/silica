@@ -8,12 +8,7 @@ async function fetchPets() {
 			const listItem = document.createElement("li");
 			listItem.textContent = `${pet.pet_name} (Microchip: ${pet.microchip_number})`;
 			listItem.addEventListener("click", () =>
-				SelectPetAndOwner({
-					owner_name: pet.owner_name,
-					pet_name: pet.pet_name,
-					pet_id: pet.pet_id,
-					species_id: pet.species_id
-				})
+				SelectPetAndOwner(pet)
 			);
 			petList.appendChild(listItem);
 		});

@@ -65,7 +65,7 @@ app.get("/api/pet_owner", (req, res) => {
 app.get("/api/owner_pet", (req, res) => {
 	const owner_name = req.query.owner_name;
 	console.log("owner name: " + owner_name);
-	let query_string = `select o.name as owner_name, p.name as pet_name
+	let query_string = `select o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id
 					from owner as o, pet as p 
 					where p.owner_id = o.owner_id `;
 	if (owner_name) {

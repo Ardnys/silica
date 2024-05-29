@@ -87,16 +87,14 @@ async function fetchIncomingVaccines() {
 	}
 }
 
-async function fetchAppropriateVaccines(pet_id, species_id) {
+async function fetchSafeVaccines(pet_id, species_id) {
 	try {
 		const response = await fetch(
-			`/api/appropriate_vaccines?` +
-				new URLSearchParams({ pet_id: pet_id, species_id: species_id })
+			`/api/safe_vaccines?` + new URLSearchParams({ pet_id, species_id })
 		);
 
 		const vaccines = await response.json();
-
-		const vaccineList = document.getElementById("appropriate-vaccine-list");
+		const vaccineList = document.getElementById("safe-vaccine-list");
 		vaccineList.innerHTML = "";
 		vaccines.forEach((vaccine) => {
 			const listItem = document.createElement("li");
@@ -104,7 +102,7 @@ async function fetchAppropriateVaccines(pet_id, species_id) {
 			vaccineList.appendChild(listItem);
 		});
 	} catch (error) {
-		console.error("error fetching appropriate vaccines:", error);
+		console.error("error fetching safe vaccines:", error);
 	}
 }
 
@@ -119,7 +117,7 @@ function SelectPetAndOwner(content) {
 	pet_name_p.innerHTML = content.pet_name;
 	pet_name_header.innerHTML = content.pet_name;
 
-	fetchAppropriateVaccines(content.pet_id, content.species_id);
+	fetchSafeVaccines(content.pet_id, content.species_id);
 }
 
 document.addEventListener("DOMContentLoaded", fetchPets);

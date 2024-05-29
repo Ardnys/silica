@@ -28,12 +28,6 @@ body {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* #pet-section,
-#owner-section {
-	height: 60%;
-} 
-*/
-
 .section {
 	padding: 20px;
 	border: 1px solid #ddd;
@@ -95,9 +89,4 @@ button:hover {
 
 .pet-value {
 	margin-left: 10px;
-}
-
-#selected-pet-section {
-	border: 2px solid #007bff;
-	background-color: #eef;
 }

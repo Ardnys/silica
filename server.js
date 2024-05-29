@@ -65,7 +65,7 @@ app.get("/api/pet_owner", (req, res) => {
 app.get("/api/owner_pet", (req, res) => {
 	const owner_name = req.query.owner_name;
 	console.log("owner name: " + owner_name);
-	let query_string = `select o.name as owner_name, p.name as pet_name
+	let query_string = `select o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id
 					from owner as o, pet as p 
 					where p.owner_id = o.owner_id `;
 	if (owner_name) {
@@ -86,12 +86,12 @@ app.get("/api/owner_pet", (req, res) => {
 app.get("/api/incoming_vaccines", (req, res) => {
 	let query_string = `
 		SELECT vin.vaccination_date, vac.name AS vaccine_name, pet.name AS pet_name, o.name as owner_name,
-		(vin.vaccination_date + interval '1 month' * (vac.time_period))::date AS next_vaccination
+			(vin.vaccination_date + interval '1 month' * (vac.time_period))::date AS next_vaccination
 		FROM public.vaccination AS vin, public.vaccine AS vac, public.pet AS pet, public.owner as o
 		WHERE vin.vaccine_id = vac.vaccine_id AND
-		vin.owner_id = o.owner_id AND
-		vin.pet_id = pet.pet_id AND
-		(vin.vaccination_date + interval '1 month' * (vac.time_period-1)) < CURRENT_DATE 	
+			vin.owner_id = o.owner_id AND
+			vin.pet_id = pet.pet_id AND
+			(vin.vaccination_date + interval '1 month' * (vac.time_period-1)) < CURRENT_DATE 	
 	`;
 	console.log("query str: " + query_string);
 	client.query(query_string, (err, result) => {
@@ -137,7 +137,6 @@ app.get("/api/appropriate_vaccines", (req, res) => {
 		}
 	});
 });
-
 
 app.listen(PORT, () => {
 	console.log(`server is running on: http://localhost:${PORT}`);

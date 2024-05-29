@@ -74,6 +74,76 @@ INSERT INTO public.vaccination (vaccine_id, vaccination_date, pet_id, species_id
 (5, '2024-11-25', 47, 35, 16),-- Tweety (Canary) - Owner 4
 (6, '2024-12-30', 48, 36, 17);-- Fluffy (Chinchilla) - Owner 5
 
+-- (1-5)vaccines have one or more allergens. vaccine 6 doesn't
+INSERT INTO public.contains (allergen_id, vaccine_id) VALUES
+(1,1),
+(2,1),
+(3,1),
+(4,2),
+(5,2),
+(6,3),
+(7,3),
+(8,4),
+(9,4),
+(10,5),
+(11,5),
+(12,5),
+(1,5),
+(2,5);
+
+-- (25-34)pets reacts to one or more allergens. (35-36) doesn"t
+INSERT INTO public.reacts_to (pet_id,owner_id, species_id, allergen_id) VALUES
+(25,8,13,1),
+(25,8,13,2),
+(25,8,13,3),
+(26,9,14,4),
+(26,9,14,5),
+(27,10,15,6),
+(27,10,15,7),
+(28,11,16,8),
+(29,12,17,9),
+(30,13,18,10),
+(31,14,19,11),
+(32,8,20,12),
+(33,9,21,1),
+(34,10,22,2),
+(34,11,22,3);
+
+-- there is at least one vaccine for every species
+INSERT INTO public.vaccination_for (species_id, vaccine_id) VALUES
+(13,1),
+(13,2),
+(13,3),
+(13,4),
+(14,1),
+(14,2),
+(14,3),
+(14,4),
+(14,5),
+(15,2),
+(15,3),
+(16,3),
+(16,4),
+(16,5),
+(17,5),
+(18,2),
+(18,3),
+(19,1),
+(19,6),
+(20,1),
+(20,4),
+(21,4),
+(21,5),
+(22,5),
+(22,6),
+(23,1),
+(23,3),
+(24,1),
+(24,4);
+
+
+
+
 
 
 

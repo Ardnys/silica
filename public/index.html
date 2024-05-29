@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vet Dashboard</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <div class="section" id="pet-section">
-        <h1>Pet List</h1>
-        <ul id="pet-list"></ul>
-      </div>
-      <div class="section" id="owner-section">
-        <h1>Owner List</h1>
-        <ul id="owner-list"></ul>
-      </div>
-      <div class="section" id="search-section">
-        <h1>Search pet by owner name</h1>
-        <input id="owner-input" type="text" placeholder="Enter name" />
-        <button id="owner-pet-search">Search</button>
-        <ul id="owner-pet-list"></ul>
-      </div>
-      <div class="section" id="selected-pet-section" hidden>
-        <h1>Selected pet</h1>
-        <p>
-          <span class="pet-field">Owner:</span>
-          <span class="pet-value" id="owner-name-v"></span>
-        </p>
-        <p>
-          <span class="pet-field">Name:</span>
-          <span class="pet-value" id="pet-name-v"></span>
-        </p>
-      </div>
-      <div class="section" id="owner-total-section">
-        <h1>Owner Totals</h1>
-        <ul id="owner-total-list"></ul>
-      </div>
-    </div>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Vet Dashboard</title>
+	<link rel="stylesheet" href="styles.css" />
+</head>
 
-    <script src="script.js"></script>
-  </body>
+<body>
+	<div class="container">
+		<div class="section" id="pet-section">
+			<h1>Pet List</h1>
+			<ul id="pet-list"></ul>
+		</div>
+		<div class="section" id="owner-section">
+			<h1>Owner List</h1>
+			<ul id="owner-list"></ul>
+		</div>
+		<div class="section" id="search-section">
+			<h1>Search pet by owner name</h1>
+			<input id="owner-input" type="text" placeholder="Enter name" />
+			<button id="owner-pet-search">Search</button>
+			<ul id="owner-pet-list"></ul>
+		</div>
+		<div class="section" id="incoming-vaccine-section">
+			<h1>Incoming Vaccines</h1>
+			<ul id="incoming-vaccine-list"></ul>
+		</div>
+		<div class="section" id="selected-pet-section">
+			<h1>Selected pet</h1>
+			<p>
+				<span class="pet-field">Owner:</span>
+				<span class="pet-value" id="owner-name-v"></span>
+			</p>
+			<p>
+				<span class="pet-field">Pet:</span>
+				<span class="pet-value" id="pet-name-v"></span>
+			</p>
+			<h3>Safe vaccines for <span id="pet-name-header"></span>:</h3>
+			<ul id="safe-vaccine-list"></ul>
+		</div>
+		<div class="section" id="owner-total-section">
+			<h1>Owner Totals</h1>
+			<ul id="owner-total-list"></ul>
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+
 </html>

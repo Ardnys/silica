@@ -104,8 +104,29 @@ app.get("/api/owner_pet", (req, res) => {
   });
 });
 
+app.get("/api/incoming_vaccines", (req, res) => {
+  let query_string = `
+		SELECT vin.vaccination_date, vac.name AS vaccine_name, pet.name AS pet_name, o.name as owner_name,
+		(vin.vaccination_date + interval '1 month' * (vac.time_period))::date AS next_vaccination
+		FROM public.vaccination AS vin, public.vaccine AS vac, public.pet AS pet, public.owner as o
+		WHERE vin.vaccine_id = vac.vaccine_id AND
+		vin.owner_id = o.owner_id AND
+		vin.pet_id = pet.pet_id AND
+		(vin.vaccination_date + interval '1 month' * (vac.time_period-1)) < CURRENT_DATE 	
+	`;
+  console.log("query str: " + query_string);
+  client.query(query_string, (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("err: ", err);
+    } else {
+      res.json(result.rows);
+    }
+  });
+});
+
 app.listen(PORT, () => {
-  console.log(`server is running on port: ${PORT}`);
+  console.log(`server is running on: http://localhost:${PORT}`);
 });
 
 // // Create

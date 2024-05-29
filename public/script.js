@@ -1,4 +1,4 @@
-// TODO fetch stuff here to display in the ui
+const formatter = new Intl.DateTimeFormat("tr-TR");
 async function fetchPets() {
 	try {
 		const response = await fetch("/api/pets");
@@ -60,6 +60,38 @@ async function fetchOwnerPet() {
 	}
 }
 
+async function fetchIncomingVaccines() {
+	try {
+		const response = await fetch("/api/incoming_vaccines");
+		const vaccines = await response.json();
+		const vaccine_list = document.getElementById("incoming-vaccine-list");
+		vaccines.forEach((vac) => {
+			const listItem = document.createElement("li");
+			const div_inside_list = document.createElement("div");
+			const owner_name = document.createElement("p");
+			const pet_name = document.createElement("p");
+			const vaccine_name = document.createElement("p");
+			const scheduled_date = document.createElement("p");
+
+			let next_vac = new Date(vac.next_vaccination);
+			owner_name.textContent = `Owner: ${vac.owner_name}`;
+			pet_name.textContent = `Pet: ${vac.pet_name}`;
+			vaccine_name.textContent = `Vaccine: ${vac.vaccine_name}`;
+			scheduled_date.textContent = `Scheduled: ${formatter.format(next_vac)}`;
+
+			div_inside_list.appendChild(owner_name);
+			div_inside_list.appendChild(pet_name);
+			div_inside_list.appendChild(vaccine_name);
+			div_inside_list.appendChild(scheduled_date);
+
+			listItem.appendChild(div_inside_list);
+			vaccine_list.appendChild(listItem);
+		});
+	} catch (error) {
+		console.error("error fetching vaccines: ", error);
+	}
+}
+
 // triggered when a pet is selected from the list
 function SelectPetAndOwner(content) {
 	let div = document.getElementById("selected-pet-section");
@@ -72,6 +104,7 @@ function SelectPetAndOwner(content) {
 
 document.addEventListener("DOMContentLoaded", fetchPets);
 document.addEventListener("DOMContentLoaded", fetchOwners);
+document.addEventListener("DOMContentLoaded", fetchIncomingVaccines);
 
 const owner_pet_button = document.getElementById("owner-pet-search");
 owner_pet_button.addEventListener("click", fetchOwnerPet);

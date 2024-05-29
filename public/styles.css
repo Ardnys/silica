@@ -16,9 +16,11 @@ body {
 /* TODO make grid with percentages and size them better */
 .container {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(2, 1fr);
 	grid-gap: 20px;
 	width: 80%;
+	height: 80vh;
 	max-width: 1200px;
 	background-color: #fff;
 	padding: 20px;
@@ -26,11 +28,18 @@ body {
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* #pet-section,
+#owner-section {
+	height: 60%;
+} 
+*/
+
 .section {
 	padding: 20px;
 	border: 1px solid #ddd;
 	border-radius: 10px;
 	background-color: #fafafa;
+	overflow-y: auto;
 }
 
 .section h1 {

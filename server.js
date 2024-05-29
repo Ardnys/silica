@@ -10,7 +10,7 @@ const client = new Client({
 	user: "postgres",
 	host: "localhost",
 	database: "vet-db",
-	password: "beyza1572",
+	password: process.env.POSTGRE_PASSWORD,
 	port: "5432",
 });
 

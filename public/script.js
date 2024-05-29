@@ -34,6 +34,20 @@ async function fetchOwners() {
 		console.error("Error fetching owners:", error);
 	}
 }
+async function fetchTotalPrices() {
+	try {
+		const response = await fetch("/api/owner_totals");
+		const ownerPrices = await response.json();
+		const ownerPriceList = document.getElementById("owner-total-list");
+		ownerPrices.forEach((owner) => {
+			const listItem = document.createElement("li");
+			listItem.textContent = `Name: ${owner.name} (Total Price: ${owner.total_price}$)`;
+			ownerPriceList.appendChild(listItem);
+		});
+	} catch (error) {
+		console.error("Error fetching owners:", error);
+	}
+}
 
 async function fetchOwnerPet() {
 	try {
@@ -52,6 +66,37 @@ async function fetchOwnerPet() {
 		});
 	} catch (error) {
 		console.error("Error fetching owners:", error);
+	}
+}
+async function fetchIncomingVaccines() {
+	try {
+		const response = await fetch("/api/incoming_vaccines");
+		const vaccines = await response.json();
+		const vaccine_list = document.getElementById("incoming-vaccine-list");
+		vaccines.forEach((vac) => {
+			const listItem = document.createElement("li");
+			const div_inside_list = document.createElement("div");
+			const owner_name = document.createElement("p");
+			const pet_name = document.createElement("p");
+			const vaccine_name = document.createElement("p");
+			const scheduled_date = document.createElement("p");
+
+			let next_vac = new Date(vac.next_vaccination);
+			owner_name.textContent = `Owner: ${vac.owner_name}`;
+			pet_name.textContent = `Pet: ${vac.pet_name}`;
+			vaccine_name.textContent = `Vaccine: ${vac.vaccine_name}`;
+			scheduled_date.textContent = `Scheduled: ${formatter.format(next_vac)}`;
+
+			div_inside_list.appendChild(owner_name);
+			div_inside_list.appendChild(pet_name);
+			div_inside_list.appendChild(vaccine_name);
+			div_inside_list.appendChild(scheduled_date);
+
+			listItem.appendChild(div_inside_list);
+			vaccine_list.appendChild(listItem);
+		});
+	} catch (error) {
+		console.error("error fetching vaccines: ", error);
 	}
 }
 
@@ -123,6 +168,7 @@ function SelectPetAndOwner(content) {
 document.addEventListener("DOMContentLoaded", fetchPets);
 document.addEventListener("DOMContentLoaded", fetchOwners);
 document.addEventListener("DOMContentLoaded", fetchIncomingVaccines);
+document.addEventListener("DOMContentLoaded", fetchTotalPrices);
 
 const owner_pet_button = document.getElementById("owner-pet-search");
 owner_pet_button.addEventListener("click", fetchOwnerPet);

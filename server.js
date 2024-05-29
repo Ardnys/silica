@@ -44,6 +44,27 @@ app.get("/api/owners", (req, res) => {
 	});
 });
 
+app.get("/api/owner_totals", (req, res) => {
+	client.query(
+		`
+  SELECT o.name AS name, SUM(v2.price) AS total_price
+  FROM owner o
+  JOIN pet p ON o.owner_id = p.owner_id
+  JOIN vaccination v1 ON v1.pet_id = p.pet_id
+  JOIN vaccine v2 ON v1.vaccine_id = v2.vaccine_id
+  GROUP BY o.owner_id
+  ORDER BY total_price DESC;
+`,
+		(err, result) => {
+			if (err) {
+				res.status(500).send(err);
+			} else {
+				res.json(result.rows);
+			}
+		}
+	);
+});
+
 app.get("/api/pet_owner", (req, res) => {
 	const pet_id = req.query.pet_id;
 	let query_string = `select o.name as owner_name

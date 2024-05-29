@@ -104,7 +104,7 @@ app.get("/api/incoming_vaccines", (req, res) => {
 	});
 });
 
-app.get("/api/appropriate_vaccines", (req, res) => {
+app.get("/api/safe_vaccines", (req, res) => {
 	const pet_id = req.query.pet_id;
 	const species_id = req.query.species_id;
 

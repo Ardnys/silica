@@ -11,6 +11,8 @@ async function fetchPets() {
 				SelectPetAndOwner({
 					owner_name: pet.owner_name,
 					pet_name: pet.pet_name,
+					pet_id: pet.pet_id,
+					species_id: pet.species_id
 				})
 			);
 			petList.appendChild(listItem);
@@ -92,14 +94,36 @@ async function fetchIncomingVaccines() {
 	}
 }
 
+async function fetchAppropriateVaccines(pet_id, species_id) {
+	try {
+		const response = await fetch(`/api/appropriate_vaccines?` + new URLSearchParams({ pet_id, species_id }));
+
+		const vaccines = await response.json();
+		const vaccineList = document.getElementById("appropriate-vaccine-list");
+		vaccineList.innerHTML = "";
+		vaccines.forEach((vaccine) => {
+			const listItem = document.createElement("li");
+			listItem.textContent = vaccine.name;
+			vaccineList.appendChild(listItem);
+		});
+	} catch (error) {
+		console.error("error fetching apropriate vaccines:", error);
+	}
+}
+
+
 // triggered when a pet is selected from the list
 function SelectPetAndOwner(content) {
 	let div = document.getElementById("selected-pet-section");
 	div.hidden = false;
 	let owner_name_p = document.getElementById("owner-name-v");
 	let pet_name_p = document.getElementById("pet-name-v");
+	let pet_name_header = document.getElementById("pet-name-header");
 	owner_name_p.innerHTML = content.owner_name;
 	pet_name_p.innerHTML = content.pet_name;
+	pet_name_header.innerHTML = content.pet_name;
+
+	fetchAppropriateVaccines(content.pet_id, content.species_id);
 }
 
 document.addEventListener("DOMContentLoaded", fetchPets);

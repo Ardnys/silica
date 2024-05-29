@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Add fields as necessary
 app.get("/api/pets", (req, res) => {
 	client.query(
-		`SELECT o.name as owner_name, p.name as pet_name, p.microchip_number 
+		`SELECT o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id, p.microchip_number 
 			      FROM pet as p, owner as o 
 				  WHERE p.owner_id = o.owner_id`,
 		(err, result) => {
@@ -103,6 +103,41 @@ app.get("/api/incoming_vaccines", (req, res) => {
 		}
 	});
 });
+
+app.get("/api/appropriate_vaccines", (req, res) => {
+	const pet_id = req.query.pet_id;
+	const species_id = req.query.species_id;
+
+	let query_string = `
+		SELECT v.name
+		FROM vaccine v
+		WHERE v.vaccine_id NOT IN (
+			SELECT c.vaccine_id
+			FROM contains c
+			WHERE c.allergen_id IN (
+				SELECT a.allergen_id
+				FROM allergen a
+				JOIN reacts_to r ON a.allergen_id = r.allergen_id
+				WHERE r.pet_id = $1
+			)
+		)
+		AND v.vaccine_id IN (
+			SELECT f.vaccine_id
+			FROM vaccination_for f
+			WHERE f.species_id = $2
+		);
+	`;
+
+	client.query(query_string, [pet_id, species_id], (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log("err: ", err);
+		} else {
+			res.json(result.rows);
+		}
+	});
+});
+
 
 app.listen(PORT, () => {
 	console.log(`server is running on: http://localhost:${PORT}`);

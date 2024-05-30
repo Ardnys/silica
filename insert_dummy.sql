@@ -146,5 +146,5 @@ INSERT INTO public.vaccination_for (species_id, vaccine_id) VALUES
 
 
 
-
+	
 

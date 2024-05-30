@@ -7,11 +7,11 @@ const PORT = 3000;
 // TODO express server here
 
 const client = new Client({
-	user: "postgres",
-	host: "localhost",
-	database: "vet-db",
-	password: process.env.POSTGRE_PASSWORD,
-	port: "5432",
+  user: "postgres",
+  host: "localhost",
+  database: "vet-db",
+  password: process.env.POSTGRE_PASSWORD,
+  port: "5432",
 });
 
 client.connect();
@@ -20,33 +20,34 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Add fields as necessary
 app.get("/api/pets", (req, res) => {
-	client.query(
-		`SELECT o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id, p.microchip_number 
-			      FROM pet as p, owner as o 
-				  WHERE p.owner_id = o.owner_id`,
-		(err, result) => {
-			if (err) {
-				res.status(500).send(err);
-			} else {
-				res.json(result.rows);
-			}
-		}
-	);
+  client.query(
+    `SELECT o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id, p.microchip_number, v.vaccine_id
+			      FROM pet as p, owner as o, vaccination as v
+				  WHERE p.owner_id = o.owner_id AND v.pet_id = p.pet_id`,
+
+    (err, result) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(result.rows);
+      }
+    }
+  );
 });
 
 app.get("/api/owners", (req, res) => {
-	client.query("SELECT * FROM owner", (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-		} else {
-			res.json(result.rows);
-		}
-	});
+  client.query("SELECT * FROM owner", (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(result.rows);
+    }
+  });
 });
 
 app.get("/api/owner_totals", (req, res) => {
-	client.query(
-		`
+  client.query(
+    `
   SELECT o.name AS name, SUM(v2.price) AS total_price
   FROM owner o
   JOIN pet p ON o.owner_id = p.owner_id
@@ -55,57 +56,57 @@ app.get("/api/owner_totals", (req, res) => {
   GROUP BY o.owner_id
   ORDER BY total_price DESC;
 `,
-		(err, result) => {
-			if (err) {
-				res.status(500).send(err);
-			} else {
-				res.json(result.rows);
-			}
-		}
-	);
+    (err, result) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(result.rows);
+      }
+    }
+  );
 });
 
 app.get("/api/pet_owner", (req, res) => {
-	const pet_id = req.query.pet_id;
-	let query_string = `select o.name as owner_name
+  const pet_id = req.query.pet_id;
+  let query_string = `select o.name as owner_name
 			from public.pet as p, public.owner as o
 			where p.owner_id = o.owner_id `;
-	if (pet_id) {
-		query_string += `and p.pet_id = $1;`;
-	}
-	client.query(query_string, [pet_id], (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-			console.log("what: " + err);
-		} else {
-			res.json(result.rows);
-		}
-	});
+  if (pet_id) {
+    query_string += `and p.pet_id = $1;`;
+  }
+  client.query(query_string, [pet_id], (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("what: " + err);
+    } else {
+      res.json(result.rows);
+    }
+  });
 });
 
 app.get("/api/owner_pet", (req, res) => {
-	const owner_name = req.query.owner_name;
-	console.log("owner name: " + owner_name);
-	let query_string = `select o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id
+  const owner_name = req.query.owner_name;
+  console.log("owner name: " + owner_name);
+  let query_string = `select o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id
 					from owner as o, pet as p 
 					where p.owner_id = o.owner_id `;
-	if (owner_name) {
-		query_string += `and o.name = $1;`;
-	}
-	console.log("query str: " + query_string);
-	client.query(query_string, [owner_name], (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-			console.log("what: " + err);
-		} else {
-			res.json(result.rows);
-			console.log("yes");
-		}
-	});
+  if (owner_name) {
+    query_string += `and o.name = $1;`;
+  }
+  console.log("query str: " + query_string);
+  client.query(query_string, [owner_name], (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("what: " + err);
+    } else {
+      res.json(result.rows);
+      console.log("yes");
+    }
+  });
 });
 
 app.get("/api/incoming_vaccines", (req, res) => {
-	let query_string = `
+  let query_string = `
 		SELECT vin.vaccination_date, vac.name AS vaccine_name, pet.name AS pet_name, o.name as owner_name,
 			(vin.vaccination_date + interval '1 month' * (vac.time_period))::date AS next_vaccination
 		FROM public.vaccination AS vin, public.vaccine AS vac, public.pet AS pet, public.owner as o
@@ -114,23 +115,23 @@ app.get("/api/incoming_vaccines", (req, res) => {
 			vin.pet_id = pet.pet_id AND
 			(vin.vaccination_date + interval '1 month' * (vac.time_period-1)) < CURRENT_DATE 	
 	`;
-	console.log("query str: " + query_string);
-	client.query(query_string, (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-			console.log("err: ", err);
-		} else {
-			res.json(result.rows);
-		}
-	});
+  console.log("query str: " + query_string);
+  client.query(query_string, (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("err: ", err);
+    } else {
+      res.json(result.rows);
+    }
+  });
 });
 
 app.get("/api/safe_vaccines", (req, res) => {
-	const pet_id = req.query.pet_id;
-	const species_id = req.query.species_id;
+  const pet_id = req.query.pet_id;
+  const species_id = req.query.species_id;
 
-	let query_string = `
-		SELECT v.name
+  let query_string = `
+		SELECT v.name, v.vaccine_id as vaccine_id
 		FROM vaccine v
 		WHERE v.vaccine_id NOT IN (
 			SELECT c.vaccine_id
@@ -149,18 +150,38 @@ app.get("/api/safe_vaccines", (req, res) => {
 		);
 	`;
 
-	client.query(query_string, [pet_id, species_id], (err, result) => {
-		if (err) {
-			res.status(500).send(err);
-			console.log("err: ", err);
-		} else {
-			res.json(result.rows);
-		}
-	});
+  client.query(query_string, [pet_id, species_id], (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("err: ", err);
+    } else {
+      res.json(result.rows);
+    }
+  });
+});
+
+app.get("/api/last_vaccine_date", (req, res) => {
+  const vaccine_id = req.query.vaccine_id;
+  const pet_id = req.query.pet_id;
+  let query_string = `
+		SELECT MIN(vaccination_date) as last_vaccine_date
+		FROM vaccination
+		WHERE vaccine_id = $1
+		AND pet_id = $2
+	`;
+
+  client.query(query_string, [vaccine_id, pet_id], (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+      console.log("err: ", err);
+    } else {
+      res.json(result.rows);
+    }
+  });
 });
 
 app.listen(PORT, () => {
-	console.log(`server is running on: http://localhost:${PORT}`);
+  console.log(`server is running on: http://localhost:${PORT}`);
 });
 
 // // Create

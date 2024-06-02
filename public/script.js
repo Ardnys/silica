@@ -149,8 +149,9 @@ async function fetchSafeVaccines(pet_id, species_id) {
 
   const vaccineList = document.getElementById("safe-vaccine-list");
   vaccineList.innerHTML = "";
+
   safeVaccinesList.forEach(async (vaccine) => {
-    console.log(vaccine);
+    console.log("vaccine: ", vaccine);
     const listItem = document.createElement("li");
     const div_inside_list = document.createElement("div");
     const vaccine_name = document.createElement("p");
@@ -168,11 +169,18 @@ async function fetchSafeVaccines(pet_id, species_id) {
 
       const lastVaccine = await lastVaccineResponse.json();
       console.log(lastVaccine);
-      const vac_date = new Date(lastVaccine[0].last_vaccine_date);
-      console.log(lastVaccine[0].last_vaccine_date);
-      last_scheduled_date.textContent = `Last schedule date: ${formatter.format(
-        vac_date
-      )}`;
+      if (lastVaccine[0]) {
+        const vac_date = new Date(lastVaccine[0].last_vaccine_date);
+        console.log(lastVaccine[0].last_vaccine_date);
+        last_scheduled_date.textContent = `Next scheduled date: ${formatter.format(
+          vac_date
+        )}`;
+      } else {
+        last_scheduled_date.textContent = `Pet has not been vaccined with this. Suggested date: ${formatter.format(
+          new Date()
+        )}`;
+
+      }
     } catch (error) {
       console.error("error displaying last vaccine:", error);
     }

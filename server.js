@@ -10,7 +10,7 @@ const client = new Client({
 	user: "postgres",
 	host: "localhost",
 	database: "vet-db",
-	password: "kootleen7",
+	password: process.env.POSTGRE_PASSWORD,
 	port: "8883",
 });
 
@@ -160,10 +160,10 @@ app.get("/api/safe_vaccines", (req, res) => {
 });
 
 app.get("/api/last_vaccine_date", (req, res) => {
-  const vaccine_id = req.query.vaccine_id;
-  const pet_id = req.query.pet_id;
-  console.log(`v: ${vaccine_id}, p: ${pet_id}`)
-  let query_string = `
+	const vaccine_id = req.query.vaccine_id;
+	const pet_id = req.query.pet_id;
+	console.log(`v: ${vaccine_id}, p: ${pet_id}`);
+	let query_string = `
 SELECT (min(v.vaccination_date) + interval '1 month' * (vac.time_period))::date as last_vaccine_date
 	FROM vaccination as v, vaccine as vac
 	WHERE v.vaccine_id = $1
@@ -172,15 +172,15 @@ SELECT (min(v.vaccination_date) + interval '1 month' * (vac.time_period))::date 
 	GROUP BY vac.time_period;
 	`;
 
-  client.query(query_string, [vaccine_id, pet_id], (err, result) => {
-    if (err) {
-      res.status(500).send(err);
-      console.log("err: ", err);
-    } else {
-      res.json(result.rows);
-	  console.log("res: ", result.rows)
-    }
-  });
+	client.query(query_string, [vaccine_id, pet_id], (err, result) => {
+		if (err) {
+			res.status(500).send(err);
+			console.log("err: ", err);
+		} else {
+			res.json(result.rows);
+			console.log("res: ", result.rows);
+		}
+	});
 });
 
 app.listen(PORT, () => {

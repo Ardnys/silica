@@ -1,17 +1,19 @@
 const { Client } = require("pg");
 const express = require("express");
 const path = require("path");
+require("dotenv").config();
 
 const app = express();
-const PORT = 3000;
-// TODO express server here
+const PORT = 8892;
+
+console.log(process.env.POSTGRE_PASSWORD);
 
 const client = new Client({
 	user: "postgres",
 	host: "localhost",
-	database: "vet-db",
+	database: "vetdb",
 	password: process.env.POSTGRE_PASSWORD,
-	port: "8883",
+	port: 5432,
 });
 
 client.connect();

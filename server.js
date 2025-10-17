@@ -6,13 +6,13 @@ require("dotenv").config();
 const app = express();
 const PORT = 8892;
 
-console.log(process.env.POSTGRE_PASSWORD);
+console.log(process.env.POSTGRES_PASSWORD);
 
 const client = new Client({
 	user: "postgres",
 	host: "localhost",
 	database: "vetdb",
-	password: process.env.POSTGRE_PASSWORD,
+	password: process.env.POSTGRES_PASSWORD,
 	port: 5432,
 });
 
@@ -91,11 +91,14 @@ app.get("/api/owner_pet", (req, res) => {
 	let query_string = `select o.name as owner_name, p.name as pet_name, p.pet_id, p.species_id
 					from owner as o, pet as p 
 					where p.owner_id = o.owner_id `;
+	const params = [];
+
 	if (owner_name) {
-		query_string += `and o.name = $1;`;
+		params.push(`%${owner_name}%`)
+		query_string += `and o.name LIKE $1;`;
 	}
 	console.log("query str: " + query_string);
-	client.query(query_string, [owner_name], (err, result) => {
+	client.query(query_string, params, (err, result) => {
 		if (err) {
 			res.status(500).send(err);
 			console.log("what: " + err);

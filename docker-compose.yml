@@ -3,7 +3,7 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRE_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: vetdb
     volumes:
       - db_data:/var/lib/postgresql/data
